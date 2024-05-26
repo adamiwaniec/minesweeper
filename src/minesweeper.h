@@ -3,11 +3,9 @@
 #include <vector>
 #include <ctime>
 #include <algorithm>
-#include <stdbool.h>
 #include <iostream>
 #include <iomanip>
 #include <chrono>
-#include <sstream>
 
 // Game Initialization:
 // - Constructor initializes the game board based on user-defined dimensions and mine count.
@@ -20,45 +18,33 @@
 // - revealTile function reveals a tile, updating the charBoard with the number of adjacent mines.
 // - countMinesAroundTile calculates the number of mines surrounding a given tile.
 
-
-static bool EMPTY = false;
-static bool MINE = true;
+constexpr bool EMPTY = false;
+constexpr bool MINE = true;
 
 class Minesweeper {
-    public:
-        Minesweeper(); 
-        Minesweeper(const size_t& x, const size_t& y, const size_t& mines);    //use size_t instead to prevent negative numbers?
-        ~Minesweeper();
+public:
+    Minesweeper(const size_t& x, const size_t& y, const size_t& mines);
+    int playGame();
+    void printBoard() const;
 
-        int playGame();
-        void winGame(double t);
-        void loseGame(double t);
-        bool revealTile (const size_t & _x, const size_t & _y);
-        size_t countMinesAroundTile(const size_t & _x, const size_t & _y);
-        bool validTile(const size_t & _x, const size_t & _y);
-        void printBoard();
+private:
+    const size_t x, y, mines;
+    unsigned revealedEmptyTiles;
 
-        void printMineBoard();
-        void setX(unsigned n);
-        unsigned getX();
-        void setY(unsigned n);
-        unsigned getY();
-        void setMines(unsigned n);
-        unsigned getMines();
+    std::vector<std::vector<bool>> revealed;
+    std::vector<std::vector<bool>> mineBoard;
+    std::vector<std::vector<char>> charBoard;
 
-       // char** charBoard;
-        std::vector<std::vector<char>> charBoard;   //Board of chars the player sees in terminal
+    bool revealTile(const size_t& x, const size_t& y);
+    size_t countMinesAroundTile(const size_t& x, const size_t& y) const;
+    bool validTile(const size_t& x, const size_t& y) const;
+    void winGame(double t) const;
+    void loseGame(double t) const;
+    void placeMines();
 
-        unsigned revealedEmptyTiles;
+    size_t getX() const { return x; }
+    size_t getY() const { return y; }
+    size_t getMines() const { return mines; }
 
-    private:
-        size_t x;
-        size_t y;
-        unsigned mines;
-
-       // bool** revealed; 
-       // bool** mineBoard;
-        std::vector<std::vector<bool>> revealed;    //true = revealed, false = not revealed 
-        std::vector<std::vector<bool>> mineBoard;   //MINE or EMPTY (t/f)
+    friend class MinesweeperAI; 
 };
-
